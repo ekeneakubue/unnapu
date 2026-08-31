@@ -1,30 +1,52 @@
 import Link from "next/link";
-import {
-  diary,
-  facultyAccreditation,
-  kpis,
-  notices,
-  programmes,
-} from "./data";
 import { deskTitle } from "@/app/(desk)/desk/config";
+import type { OverviewStats, RecentActivity } from "@/app/(desk)/desk/overview-types";
 import type { DeskBasePath } from "@/lib/desk-access";
+import type { SessionUser } from "@/lib/session";
 import type { UserRole } from "./users/types";
-import { PageIntro, Panel, StatusBadge } from "./ui";
+import { PageIntro, Panel } from "./ui";
 
 export function OverviewDashboard({
   role,
   basePath,
+  stats,
+  activities,
+  session,
 }: {
   role: UserRole;
   basePath: DeskBasePath;
+  stats: OverviewStats;
+  activities: RecentActivity[];
+  session: SessionUser;
 }) {
+  const kpis = [
+    {
+      label: "Users",
+      value: String(stats.users),
+      hint: "Portal accounts on record",
+      href: `${basePath}/users`,
+    },
+    {
+      label: "Publications",
+      value: String(stats.publications),
+      hint: "Files in the library",
+      href: `${basePath}/publications`,
+    },
+    {
+      label: "Assessed publications",
+      value: String(stats.assessedPublications),
+      hint: "Completed external reviews",
+      href: `${basePath}/publications`,
+    },
+  ];
+
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-5">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <PageIntro
           kicker={deskTitle(role)}
           title="Overview"
-          description="A single view of programmes, accreditation, and the academic session so Senate can plan with evidence."
+          description="Users, publications, and assessment activity across the Academic Planning portal."
         />
         <p className="font-sans text-xs tracking-[0.08em] text-unn-green/45">
           {new Date().toLocaleDateString("en-GB", {
@@ -36,7 +58,7 @@ export function OverviewDashboard({
         </p>
       </div>
 
-      <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <ul className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {kpis.map((kpi) => (
           <li
             key={kpi.label}
@@ -51,134 +73,89 @@ export function OverviewDashboard({
             <p className="mt-1 font-sans text-xs font-medium text-unn-green/55">
               {kpi.hint}
             </p>
-            <p className="mt-3 font-sans text-[12px] font-semibold text-unn-green">
-              {kpi.delta}
-            </p>
+            <Link
+              href={kpi.href}
+              className="mt-3 inline-flex font-sans text-[12px] font-semibold text-unn-green hover:text-[#b8860b]"
+            >
+              View →
+            </Link>
           </li>
         ))}
       </ul>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1.2fr)_minmax(260px,0.8fr)]">
-        <Panel
-          title="Accreditation by faculty"
-          action={
-            basePath !== "/external-assessor" ? (
-              <Link
-                href={`${basePath}/accreditation`}
-                className="font-sans text-[11px] font-bold tracking-[0.1em] text-[#b8860b] uppercase hover:text-unn-green"
-              >
-                Register
-              </Link>
-            ) : undefined
-          }
-        >
-          <ul className="space-y-3">
-            {facultyAccreditation.slice(0, 8).map((row) => (
-              <li key={row.faculty}>
-                <div className="mb-1.5 flex items-baseline justify-between gap-3">
-                  <span className="font-sans text-sm text-unn-green">
-                    {row.faculty}
-                  </span>
-                  <span className="font-sans text-[11px] text-unn-green/45">
-                    {row.full}% full
-                  </span>
-                </div>
-                <div className="flex h-1.5 overflow-hidden rounded-full bg-unn-green/10">
-                  <span
-                    className="bg-unn-gold"
-                    style={{ width: `${row.full}%` }}
-                  />
-                  <span
-                    className="bg-unn-green-mid"
-                    style={{ width: `${row.interim}%` }}
-                  />
-                  <span
-                    className="bg-amber-400/80"
-                    style={{ width: `${row.due}%` }}
-                  />
-                </div>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-4 font-sans text-[11px] tracking-[0.06em] text-unn-green/40">
-            Gold full · green interim · amber due
-          </p>
+        <Panel title="Recent activity">
+          {activities.length === 0 ? (
+            <p className="font-sans text-sm text-unn-green/55">
+              No recent activity yet.
+            </p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[640px] text-left">
+                <thead>
+                  <tr className="border-b border-unn-green/10 font-sans text-[10px] tracking-[0.16em] text-unn-green/40 uppercase">
+                    <th className="pb-3 font-medium">Activity</th>
+                    <th className="pb-3 font-medium">Detail</th>
+                    <th className="pb-3 font-medium">When</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {activities.map((item) => (
+                    <tr
+                      key={item.id}
+                      className="border-b border-unn-green/10 font-sans text-sm last:border-0"
+                    >
+                      <td className="py-3 pr-4 font-semibold text-unn-green">
+                        {item.action}
+                      </td>
+                      <td className="py-3 pr-4 text-unn-green/70">
+                        {item.detail}
+                      </td>
+                      <td className="py-3 text-unn-green/55">{item.when}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </Panel>
 
-        <div className="flex flex-col gap-5">
-          <Panel title="Session diary">
-            <ol className="space-y-3">
-              {diary.slice(0, 4).map((item) => (
-                <li key={item.title} className="flex gap-3">
-                  <span className="w-12 shrink-0 font-sans text-[11px] font-semibold tracking-[0.08em] text-[#b8860b] uppercase">
-                    {item.date}
-                  </span>
-                  <span>
-                    <span className="block font-sans text-sm text-unn-green">
-                      {item.title}
-                    </span>
-                    <span className="mt-0.5 block font-sans text-xs text-unn-green/50">
-                      {item.place}
-                    </span>
-                  </span>
-                </li>
-              ))}
-            </ol>
-          </Panel>
-
-          <Panel title="Notices">
-            <ul className="space-y-3">
-              {notices.map((note) => (
-                <li key={note.title}>
-                  <p className="font-sans text-[10px] font-semibold tracking-[0.16em] text-[#b8860b] uppercase">
-                    {note.tag} · {note.time}
-                  </p>
-                  <p className="mt-1 font-sans text-sm text-unn-green/90">
-                    {note.title}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </Panel>
-        </div>
+        <Panel
+          title="Account settings"
+          action={
+            <Link
+              href={`${basePath}/settings`}
+              className="font-sans text-[11px] font-bold tracking-[0.1em] text-[#b8860b] uppercase hover:text-unn-green"
+            >
+              Open
+            </Link>
+          }
+        >
+          <div className="rounded-xl border border-unn-green/10 bg-[#f6f3ec] px-4 py-4">
+            <p className="font-sans text-[10px] font-bold tracking-[0.16em] text-[#b8860b] uppercase">
+              Signed in as
+            </p>
+            <p className="mt-2 font-serif text-xl font-bold text-unn-green">
+              {session.name}
+            </p>
+            <p className="mt-1 font-sans text-sm text-unn-green/70">
+              {session.email}
+            </p>
+            <p className="mt-1 font-sans text-xs text-unn-green/50">
+              {session.role}
+            </p>
+          </div>
+          <p className="mt-4 font-sans text-sm leading-relaxed text-unn-green/65">
+            Update your password and manage account security from settings.
+          </p>
+          <Link
+            href={`${basePath}/settings`}
+            className="mt-4 inline-flex h-10 items-center rounded-full bg-unn-green px-5 font-sans text-[11px] font-bold tracking-[0.12em] text-unn-ivory uppercase transition-colors hover:bg-unn-green-mid"
+          >
+            Change password
+          </Link>
+        </Panel>
       </div>
-
-      <Panel title="Programme watchlist">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[640px] text-left">
-            <thead>
-              <tr className="border-b border-unn-green/10 font-sans text-[10px] tracking-[0.16em] text-unn-green/40 uppercase">
-                <th className="pb-3 font-medium">Programme</th>
-                <th className="pb-3 font-medium">Faculty</th>
-                <th className="pb-3 font-medium">Campus</th>
-                <th className="pb-3 font-medium">Status</th>
-                <th className="pb-3 font-medium">Next visit</th>
-              </tr>
-            </thead>
-            <tbody>
-              {programmes.map((row) => (
-                <tr
-                  key={row.code}
-                  className="border-b border-unn-green/10 font-sans text-sm last:border-0"
-                >
-                  <td className="py-3 pr-4">
-                    <span className="block text-unn-green">{row.name}</span>
-                    <span className="text-[11px] text-unn-green/40">
-                      {row.code}
-                    </span>
-                  </td>
-                  <td className="py-3 pr-4 text-unn-green/70">{row.faculty}</td>
-                  <td className="py-3 pr-4 text-unn-green/70">{row.campus}</td>
-                  <td className="py-3 pr-4">
-                    <StatusBadge status={row.status} />
-                  </td>
-                  <td className="py-3 text-unn-green/70">{row.visit}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Panel>
     </div>
   );
 }

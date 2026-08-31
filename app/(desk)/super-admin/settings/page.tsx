@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { getSession } from "@/lib/session";
 import { PageIntro } from "../ui";
 import { SettingsPanel } from "./settings-panel";
 
@@ -6,7 +8,10 @@ export const metadata: Metadata = {
   title: "Settings",
 };
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const session = await getSession();
+  if (!session) redirect("/login");
+
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-5">
       <PageIntro
@@ -14,7 +19,7 @@ export default function SettingsPage() {
         title="Settings"
         description="Manage your portal password and account security."
       />
-      <SettingsPanel />
+      <SettingsPanel accountEmail={session.email} lockEmail />
     </div>
   );
 }
