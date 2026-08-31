@@ -1,69 +1,88 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="hero-stage relative grid h-screen max-h-screen grid-rows-[1fr_auto] overflow-hidden text-unn-ivory">
+      <div className="hero-aurora" aria-hidden="true" />
+      <div className="hero-orb hero-orb-gold" aria-hidden="true" />
+      <div className="hero-orb hero-orb-green" aria-hidden="true" />
+      <div className="hero-orb hero-orb-ivory" aria-hidden="true" />
+      <div className="hero-grid" aria-hidden="true" />
+      <div className="hero-sheen" aria-hidden="true" />
+      <span className="hero-spark hero-spark-a" aria-hidden="true" />
+      <span className="hero-spark hero-spark-b" aria-hidden="true" />
+      <span className="hero-spark hero-spark-c" aria-hidden="true" />
+
+      <div className="relative z-10 flex min-h-0 flex-col items-center justify-center overflow-hidden px-5 py-3 text-center sm:px-8 lg:px-12">
+        <header className="animate-reveal-down flex shrink-0 flex-col items-center">
+          <Image
+            src="/images/logo.png"
+            alt="University of Nigeria crest"
+            width={128}
+            height={148}
+            className="h-12 w-auto rounded-2xl shadow-[0_0_40px_rgb(212_180_90/0.25)] sm:h-14"
+            priority
+          />
+          <p className="mt-2 font-sans text-[10px] font-bold tracking-[0.28em] text-unn-gold uppercase sm:text-[11px]">
+            University of Nigeria
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <h1 className="mt-1.5 font-serif text-[clamp(1.85rem,5.5vh,3.75rem)] leading-[0.92] font-bold tracking-[-0.03em] text-unn-ivory">
+            Academic Planning
+          </h1>
+          <p className="mt-1.5 font-sans text-sm font-semibold tracking-[0.06em] text-unn-ivory/90">
+            Academic Planning Unit
+          </p>
+        </header>
+
+        <main className="mt-4 flex min-h-0 w-full max-w-xl flex-col items-center sm:mt-5">
+          <p
+            className="animate-reveal-up font-sans text-[10px] font-bold tracking-[0.26em] text-unn-gold uppercase sm:text-[11px]"
+            style={{ animationDelay: "120ms" }}
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Vice-Chancellor’s Office
+          </p>
+          <span
+            className="animate-rule mt-3 block h-0.5 w-14 rounded-full bg-unn-gold"
+            aria-hidden="true"
+          />
+          <p
+            className="animate-reveal-up mt-3 line-clamp-3 max-w-md font-sans text-[clamp(0.8125rem,1.6vh,1rem)] leading-relaxed font-medium text-unn-ivory/90"
+            style={{ animationDelay: "280ms" }}
           >
-            Documentation
-          </a>
+            The quality-control office of the University of Nigeria. We assemble
+            accurate data so management can plan programmes, resources, and the
+            academic session with order and evidence.
+          </p>
+        </main>
+      </div>
+
+      <div className="relative z-20 flex shrink-0 flex-col items-center gap-3 px-5 pb-4 sm:gap-4 sm:px-8 sm:pb-5 lg:px-12">
+        <div
+          className="animate-reveal-up"
+          style={{ animationDelay: "420ms" }}
+        >
+          <Link
+            href="/login"
+            className="inline-flex h-11 items-center rounded-full bg-unn-ivory px-8 font-sans text-xs font-bold tracking-[0.2em] text-unn-green uppercase shadow-[0_8px_30px_rgb(0_0_0/0.2)] transition-colors hover:bg-unn-gold hover:text-unn-green sm:h-12 sm:px-9"
+          >
+            Login
+          </Link>
         </div>
-      </main>
+        <footer
+          className="animate-reveal-up"
+          style={{ animationDelay: "560ms" }}
+        >
+          <a
+            className="font-sans text-[11px] font-semibold tracking-[0.08em] text-unn-ivory/70 transition-colors hover:text-unn-gold"
+            href="https://gigolabs.vercel.app/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Designed by GigoLabs
+          </a>
+        </footer>
+      </div>
     </div>
   );
 }

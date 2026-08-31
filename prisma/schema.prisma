@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// Add user modal roles: Super Admin, Director, Admin Staff, External Assessor
+enum Role {
+  SUPER_ADMIN
+  DIRECTOR
+  ADMIN_STAFF
+  REVIEWER // External Assessor
+}
+
+enum UserStatus {
+  ACTIVE
+  INVITED
+  SUSPENDED
+}
+
+/// Modal fields: name, email, password → passwordHash, role
+model User {
+  id           String     @id @default(cuid())
+  name         String
+  email        String     @unique
+  passwordHash String
+  role         Role       @default(ADMIN_STAFF)
+  status       UserStatus @default(INVITED)
+  lastActiveAt DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@map("users")
+}
+
+model Publication {
+  id           String   @id @default(cuid())
+  title        String
+  description  String?
+  fileName     String
+  storedName   String
+  mimeType     String
+  fileSize     Int
+  fileUrl      String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("publications")
+}
