@@ -1,19 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-
-async function signIn(formData: FormData) {
-  "use server";
-
-  const email = String(formData.get("email") ?? "").trim();
-  const password = String(formData.get("password") ?? "");
-
-  if (!email || !password) {
-    redirect("/login?error=missing");
-  }
-
-  redirect("/admin");
-}
+import { LoginForm } from "./login-form";
 
 export default async function LoginPage({
   searchParams,
@@ -21,7 +8,18 @@ export default async function LoginPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const params = await searchParams;
-  const showError = params.error === "missing";
+  const errorMessage =
+    params.error === "missing"
+      ? "Email and password are required."
+      : params.error === "invalid"
+        ? "Invalid email or password."
+        : params.error === "suspended"
+          ? "This account has been suspended. Contact an administrator."
+          : params.error === "forbidden"
+            ? "Your account does not have access to the planning desk."
+            : params.error === "server"
+              ? "Could not sign in right now. Check your connection and try again."
+              : null;
 
   return (
     <div className="hero-stage relative flex h-screen max-h-screen flex-col overflow-hidden text-unn-ivory">
@@ -51,54 +49,7 @@ export default async function LoginPage({
       </header>
 
       <main className="relative z-10 flex min-h-0 flex-1 items-center justify-center overflow-hidden px-5 sm:px-8">
-        <form
-          action={signIn}
-          className="animate-reveal-up w-full max-w-sm rounded-2xl border border-unn-ivory/15 bg-unn-green/40 p-6 backdrop-blur-sm sm:p-8"
-        >
-          <p className="font-sans text-[10px] font-semibold tracking-[0.24em] text-unn-gold uppercase">
-            Staff portal
-          </p>
-          <h1 className="mt-2 font-serif text-3xl font-semibold">Sign in</h1>
-          <p className="mt-2 font-sans text-sm text-unn-ivory/70">
-            Enter your university credentials to continue.
-          </p>
-
-          {showError ? (
-            <p className="mt-4 rounded-lg border border-red-300/30 bg-red-950/40 px-3 py-2 font-sans text-sm text-red-100">
-              Email and password are required.
-            </p>
-          ) : null}
-
-          <label className="mt-6 block font-sans text-[11px] tracking-[0.12em] text-unn-ivory/70 uppercase">
-            Email
-            <input
-              className="mt-2 h-11 w-full rounded-lg border border-unn-ivory/20 bg-unn-green/60 px-3 font-sans text-sm text-unn-ivory outline-none placeholder:text-unn-ivory/35 focus:border-unn-gold"
-              name="email"
-              type="email"
-              autoComplete="email"
-              placeholder="name@unn.edu.ng"
-              required
-            />
-          </label>
-
-          <label className="mt-4 block font-sans text-[11px] tracking-[0.12em] text-unn-ivory/70 uppercase">
-            Password
-            <input
-              className="mt-2 h-11 w-full rounded-lg border border-unn-ivory/20 bg-unn-green/60 px-3 font-sans text-sm text-unn-ivory outline-none placeholder:text-unn-ivory/35 focus:border-unn-gold"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-            />
-          </label>
-
-          <button
-            className="mt-6 inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-full bg-unn-ivory font-sans text-[11px] font-semibold tracking-[0.18em] text-unn-green uppercase transition-colors hover:bg-unn-gold"
-            type="submit"
-          >
-            Login
-          </button>
-        </form>
+        <LoginForm errorMessage={errorMessage} />
       </main>
     </div>
   );

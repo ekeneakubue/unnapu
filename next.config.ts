@@ -1,22 +1,40 @@
 import type { NextConfig } from "next";
 
+const allowedDevOrigins = [
+  "127.0.0.1",
+  "localhost",
+  "192.168.67.186",
+  "172.17.35.161",
+  ...(process.env.ALLOWED_DEV_ORIGINS?.split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean) ?? []),
+];
+
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["192.168.67.186", "127.0.0.1", "localhost"],
+  allowedDevOrigins,
   async redirects() {
     return [
       {
         source: "/dashboard",
-        destination: "/admin",
+        destination: "/super-admin",
+        permanent: false,
+      },
+      {
+        source: "/admin",
+        destination: "/super-admin",
+        permanent: false,
+      },
+      {
+        source: "/admin/:path*",
+        destination: "/super-admin/:path*",
         permanent: false,
       },
     ];
   },
   async rewrites() {
-    // Serve the lowercase /admin app for /Admin URLs without a redirect loop
-    // (Windows treats path casing as equal in redirects).
     return [
-      { source: "/Admin", destination: "/admin" },
-      { source: "/Admin/:path*", destination: "/admin/:path*" },
+      { source: "/Admin", destination: "/super-admin" },
+      { source: "/Admin/:path*", destination: "/super-admin/:path*" },
     ];
   },
 };
