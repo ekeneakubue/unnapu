@@ -14,7 +14,7 @@ export function getDeskNav(basePath: DeskBasePath) {
     ] as const;
   }
 
-  return [
+  const items = [
     { href: basePath, segment: null, label: "Overview" },
     { href: `${basePath}/users`, segment: "users", label: "Users" },
     {
@@ -22,13 +22,19 @@ export function getDeskNav(basePath: DeskBasePath) {
       segment: "publications",
       label: "Publications",
     },
-    {
-      href: `${basePath}/accreditation`,
-      segment: "accreditation",
-      label: "Accreditation",
-    },
+    ...(basePath === "/director"
+      ? []
+      : [
+          {
+            href: `${basePath}/accreditation`,
+            segment: "accreditation",
+            label: "Accreditation",
+          },
+        ]),
     { href: `${basePath}/settings`, segment: "settings", label: "Settings" },
-  ] as const;
+  ];
+
+  return items;
 }
 
 export function deskTitle(role: UserRole): string {

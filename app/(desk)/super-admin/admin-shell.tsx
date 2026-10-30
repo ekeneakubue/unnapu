@@ -131,9 +131,6 @@ export function AdminShell({
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <span className="hidden rounded-full border border-[#d4a84b]/55 bg-[#d4a84b]/15 px-3 py-1 font-sans text-[10px] font-bold tracking-[0.14em] text-[#9a7200] uppercase sm:inline-flex">
-              NUC cycle 2026
-            </span>
             <div className="flex items-center gap-2 rounded-full border border-unn-green/12 bg-white py-1 pr-3 pl-1">
               <span className="inline-flex size-7 items-center justify-center rounded-full bg-unn-green font-sans text-[10px] font-semibold text-unn-ivory">
                 {initials}
